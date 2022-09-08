@@ -4,7 +4,7 @@ import { splitText } from './splitText.js'
 import { textToAudio } from './textToAudio.js'
 import consola from 'consola'
 
-export interface TalkToMe {
+export interface SpeakToMe {
   file: string | Buffer
   /** The size  of the chunks to split the text into */
   chunkSize: number
@@ -23,13 +23,13 @@ export interface TalkToMe {
 const createWriteableName = (name: string, format: string) =>
   `${name.replace(/https?:\/\/|\/|:|\\|\./g, '')}.${format.replace('low', '')}`
 
-export function talkToMe(
-  props: Omit<TalkToMe, 'out'> & { mimeType: string; file: Buffer }
+export function speakToMe(
+  props: Omit<SpeakToMe, 'out'> & { mimeType: string; file: Buffer }
 ): Promise<Buffer>
-export function talkToMe(
-  props: Omit<TalkToMe, 'mimeType'> & { file: string }
+export function speakToMe(
+  props: Omit<SpeakToMe, 'mimeType'> & { file: string }
 ): Promise<void>
-export async function talkToMe({
+export async function speakToMe({
   file,
   mimeType,
   chunkSize,
@@ -37,7 +37,7 @@ export async function talkToMe({
   voice,
   out,
   log = false,
-}: TalkToMe): Promise<void | Buffer> {
+}: SpeakToMe): Promise<void | Buffer> {
   if (typeof file !== 'string' && !mimeType)
     throw new Error('mimeType is required when passing a buffer')
 

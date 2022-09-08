@@ -1,5 +1,5 @@
-export { talkToMe } from './talkToMe.js'
-export type { TalkToMe } from './talkToMe.js'
+export { speakToMe } from './speakToMe.js'
+export type { SpeakToMe } from './speakToMe.js'
 export { textToAudio } from './textToAudio.js'
 export { extractText } from './extractText.js'
 export { splitText } from './splitText.js'

@@ -1,21 +1,21 @@
 import { cli } from 'cleye'
 import { voiceNames } from './voiceNames.js'
-import { talkToMe } from './talkToMe.js'
+import { speakToMe } from './speakToMe.js'
 import { version, description } from '../package.json'
 import { VoiceNames, VoiceName, Formats, Format } from './types.js'
 import consola from 'consola'
 
 const argv = cli({
-  name: 'talktome',
+  name: 'speaktome',
   parameters: ['<file>', '[out]'],
   version,
   help: {
     description,
-    usage: 'talktome <file> [out]',
+    usage: 'speaktome <file> [out]',
     examples: [
-      'talktome somepdf.pdf',
-      'talktome whatever.txt --format webm',
-      'talktome https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3',
+      'speaktome somepdf.pdf',
+      'speaktome whatever.txt --format webm',
+      'speaktome https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3',
     ],
   },
   flags: {
@@ -55,7 +55,7 @@ const main = async () => {
   }
 
   console.info(`Extracting text from ${file}`)
-  talkToMe({ file, out, voice, format, chunkSize, log: true })
+  speakToMe({ file, out, voice, format, chunkSize, log: true })
 }
 
 main()

@@ -1,5 +1,5 @@
 {
-  "name": "talk-to-me",
+  "name": "speak-to-me",
   "description": "Convert any file to speech using MS Edge's speech synthesis API",
   "type": "module",
   "version": "0.0.1",
@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
   "bin": {
-    "talktome": "dist/cli.js"
+    "speaktome": "dist/cli.js"
   },
   "exports": {
     "import": "./dist/index.js",
@@ -29,7 +29,7 @@
     "browser",
     "cli"
   ],
-  "repository": "https://github.com/tefkah/talk-to-me",
+  "repository": "https://github.com/tefkah/speak-to-me",
   "license": "GPL-3.0-or-later",
   "files": [
     "dist"
