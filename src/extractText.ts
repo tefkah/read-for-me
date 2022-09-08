@@ -1,3 +1,4 @@
+import consola from 'consola'
 import textract from 'textract'
 import { promisify } from 'util'
 

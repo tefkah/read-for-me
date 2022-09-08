@@ -3,7 +3,8 @@ import { readFile, rename, unlink } from 'fs/promises'
 import { Formats, VoiceNames } from './types.js'
 import { extractText } from './extractText.js'
 import { splitText } from './splitText.js'
-import { textToAudio } from './textToAudio.js'
+import { textToAudio, textToAudioStream } from './textToAudio.js'
+import consola from 'consola'
 
 export interface TalkToMe {
   file: string | Buffer
@@ -52,6 +53,8 @@ export async function talkToMe({
     throw new Error('Could not extract text from file')
   }
 
+  log && consola.success('Finished extracting text!')
+
   const lines = text.length < chunkSize ? [text] : splitText(text, chunkSize)
 
   const name =
@@ -61,6 +64,14 @@ export async function talkToMe({
       ? out
       : createWriteableName(file, format)
 
+  textToAudioStream({
+    text,
+    voice,
+    format,
+    out: name,
+  })
+
+  return
   const audios = await Promise.all(
     lines.map(async (line, idx) => {
       const tempName = `${idx}${name}`

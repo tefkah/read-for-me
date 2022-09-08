@@ -3,6 +3,7 @@ import { voiceNames } from './voiceNames.js'
 import { talkToMe } from './talkToMe.js'
 import { version } from '../package.json'
 import { VoiceNames, VoiceName, Formats, Format } from './types.js'
+import consola from 'consola'
 
 const argv = cli({
   name: 'talk-to-me',
@@ -33,6 +34,9 @@ const argv = cli({
 })
 
 const main = async () => {
+  // makes output prettier
+  consola.wrapConsole()
+
   const { file, out } = argv._
   const { listVoices, voice, format, chunkSize } = argv.flags
 
@@ -41,7 +45,7 @@ const main = async () => {
     return
   }
 
-  console.log(`Extracting text from ${file}`)
+  console.info(`Extracting text from ${file}`)
   talkToMe({ file, out, voice, format, chunkSize, log: true })
 }
 
