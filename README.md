@@ -4,6 +4,8 @@ Create mp3/webms from almost any type of file using MS Edge's TTS api.
 
 Usable as a CLI tool and a library.
 
+Works on most files, both local and remote.
+
 ## Requirements
 
 You need to have `pdftotext` on your path for PDFs, `antiword` for Word. See the `textract` package for specific requirements.
