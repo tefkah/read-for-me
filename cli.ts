@@ -4,6 +4,7 @@ import { execa, execaCommand, execaCommandSync } from 'execa'
 import { fstat } from 'fs'
 import { link, unlink, rename, writeFile } from 'fs/promises'
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
+import { resolveTripleslashReference } from 'typescript'
 import { extractText } from './pdfToText'
 import { voiceNames } from './voiceNames'
 
@@ -111,7 +112,6 @@ const main = async () => {
 
   console.log(final.stdout, final.stderr)
 
-  console.log(final)
   console.log('Cleaning up...')
   const unlinked = await Promise.all(
     audios.map(async (audio, idx) => {
@@ -126,6 +126,11 @@ const main = async () => {
 
   console.log('Done!')
 }
+
+/**
+ * Apperently the tts engine is not very good at pronouncing & and will silently fail if you provide it with it
+ */
+const cleanText = (text: string) => text.replace(/&/g, 'and')
 
 const convert = async ({
   text,
@@ -144,8 +149,7 @@ const convert = async ({
 
   console.log(`Generating audio file ${out}`)
 
-  const filePath = await tts.toFile(out, text)
-  await writeFile('temp.txt', text)
+  const filePath = await tts.toFile(out, cleanText(text))
 
   return
 }
