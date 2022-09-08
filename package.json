@@ -1,15 +1,19 @@
 {
-  "name": "msedgettstest",
+  "name": "talk-to-me",
+  "description": "Convert any file to speech using MS Edge's speech synthesis API",
+  "type": "module",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
+  "bin": "dist/cli.js",
   "author": "Thomas F. K. Jorna",
-  "license": "MIT",
+  "license": "GPLv3.0+",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "cleye": "^1.2.1",
     "commander": "^9.4.0",
     "execa": "^6.1.0",
-    "fluent-ffmpeg": "^2.1.2",
     "msedge-tts": "^1.1.4",
     "text-from-pdf": "^1.1.1",
     "textract": "^2.5.0",
@@ -17,7 +21,6 @@
     "typescript": "^4.6.3"
   },
   "devDependencies": {
-    "@types/fluent-ffmpeg": "^2.1.20",
     "@types/node": "^18.7.16",
     "@types/textract": "^2.4.1",
     "prettier": "^2.7.1"

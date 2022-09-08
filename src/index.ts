@@ -1,0 +1,6 @@
+export { talkToMe, TalkToMe } from './talkToMe'
+export { textToAudio } from './textToAudio'
+export { extractText } from './extractText'
+export { splitText } from './splitText'
+export { voiceNames } from './voiceNames'
+export { default as voices } from './voices.json'
