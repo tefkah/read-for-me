@@ -1,14 +1,23 @@
 import { cli } from 'cleye'
 import { voiceNames } from './voiceNames.js'
 import { talkToMe } from './talkToMe.js'
-import { version } from '../package.json'
+import { version, description } from '../package.json'
 import { VoiceNames, VoiceName, Formats, Format } from './types.js'
 import consola from 'consola'
 
 const argv = cli({
-  name: 'talk-to-me',
+  name: 'talktome',
   parameters: ['<file>', '[out]'],
   version,
+  help: {
+    description,
+    usage: 'talktome <file> [out]',
+    examples: [
+      'talktome somepdf.pdf',
+      'talktome whatever.txt --format webm',
+      'talktome https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3',
+    ],
+  },
   flags: {
     voice: {
       type: VoiceName,

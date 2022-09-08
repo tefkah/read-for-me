@@ -10,6 +10,16 @@ You need to have `pdftotext` on your path for PDFs, `antiword` for Word. See the
 
 ## CLI
 
+### Install
+
+```sh
+pnpm add -g talk-to-me
+# npm i -g talk-to-me
+# yarn global add talk-to-me
+```
+
+### Usage
+
 ```sh
 talk-to-me v0.0.1
 
@@ -24,6 +34,8 @@ Flags:
       --version                    Show version
       --voice <value>              Voice to use (default: "en-US-Jenny")
 ```
+
+### Examples
 
 ```sh
 talktome somepdf.pdf
