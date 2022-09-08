@@ -1,21 +1,21 @@
 import { cli } from 'cleye'
 import { voiceNames } from './voiceNames.js'
-import { speakToMe } from './speakToMe.js'
+import { readForMe } from './readForMe.js'
 import { version, description } from '../package.json'
 import { VoiceNames, VoiceName, Formats, Format } from './types.js'
 import consola from 'consola'
 
 const argv = cli({
-  name: 'speaktome',
+  name: 'readforme',
   parameters: ['<file>', '[out]'],
   version,
   help: {
     description,
-    usage: 'speaktome <file> [out]',
+    usage: 'readforme <file> [out]',
     examples: [
-      'speaktome somepdf.pdf',
-      'speaktome whatever.txt --format webm',
-      'speaktome https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3',
+      'readforme somepdf.pdf',
+      'readforme whatever.txt --format webm',
+      'readforme https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3',
     ],
   },
   flags: {
@@ -55,7 +55,7 @@ const main = async () => {
   }
 
   console.info(`Extracting text from ${file}`)
-  speakToMe({ file, out, voice, format, chunkSize, log: true })
+  readForMe({ file, out, voice, format, chunkSize, log: true })
 }
 
 main()
