@@ -1,5 +1,5 @@
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
-import { formats, Formats, VoiceNames } from './cli'
+import { formats, Formats, VoiceNames } from './types.js'
 
 /**
  * Apperently the tts engine is not very good at pronouncing & and will silently fail if you provide it with it

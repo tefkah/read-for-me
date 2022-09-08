@@ -1,10 +1,9 @@
 import { execaCommand } from 'execa'
 import { readFile, rename, unlink } from 'fs/promises'
-import { format } from 'path'
-import { Formats, VoiceNames } from './cli'
-import { extractText } from './extractText'
-import { splitText } from './splitText'
-import { textToAudio } from './textToAudio'
+import { Formats, VoiceNames } from './types.js'
+import { extractText } from './extractText.js'
+import { splitText } from './splitText.js'
+import { textToAudio } from './textToAudio.js'
 
 export interface TalkToMe {
   file: string | Buffer
