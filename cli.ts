@@ -138,7 +138,6 @@ const convert = async ({
   format?: Formats
   out: string
 }) => {
-  await writeFile('temp.txt', text)
   const tts = new MsEdgeTTS(true)
 
   await tts.setMetadata(`${voice}Neural`, formats[format] as OUTPUT_FORMAT)
@@ -146,6 +145,7 @@ const convert = async ({
   console.log(`Generating audio file ${out}`)
 
   const filePath = await tts.toFile(out, text)
+  await writeFile('temp.txt', text)
 
   return
 }
