@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
   "bin": {
-    "talk-to-me": "dist/cli.js"
+    "talktome": "dist/cli.js"
   },
   "exports": {
     "import": "./dist/index.js",
@@ -43,6 +43,7 @@
     "execa": "^6.1.0",
     "msedge-tts": "^1.1.4",
     "ora": "^6.1.2",
+    "stream-to-promise": "^3.0.0",
     "text-from-pdf": "^1.1.1",
     "textract": "^2.5.0",
     "ts-node": "^10.7.0",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.16",
+    "@types/stream-to-promise": "^2.2.1",
     "@types/textract": "^2.4.1",
     "consola": "^2.15.3",
     "pkgroll": "^1.4.0",

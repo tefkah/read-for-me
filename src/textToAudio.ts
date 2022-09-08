@@ -3,13 +3,14 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 import { formats, Formats, VoiceNames } from './types.js'
 import consola from 'consola'
 import ora from 'ora'
+import streamToPromise from 'stream-to-promise'
 
 /**
  * Apperently the tts engine is not very good at pronouncing & and will silently fail if you provide it with it
  */
 const cleanText = (text: string) => text.replace(/&/g, 'and')
 
-export const textToAudio = async ({
+export const textToAudioFile = async ({
   text,
   voice = 'en-US-Jenny',
   format = 'mp3',
@@ -30,18 +31,25 @@ export const textToAudio = async ({
 
   return
 }
+type TextToAudioOptions = {
+  text: string
+  voice?: VoiceNames
+  format?: Formats
+  out?: string
+}
 
-export const textToAudioStream = async ({
+export function textToAudio(
+  opts: TextToAudioOptions & { out: string }
+): Promise<undefined>
+export function textToAudio(
+  opts: Omit<TextToAudioOptions, 'out'>
+): Promise<Buffer>
+export async function textToAudio({
   text,
   voice = 'en-US-Jenny',
   format = 'mp3',
   out,
-}: {
-  text: string
-  voice?: VoiceNames
-  format?: Formats
-  out: string
-}) => {
+}: TextToAudioOptions) {
   const tts = new MsEdgeTTS()
 
   consola.info(`Generating audio file ${out}`)
@@ -49,6 +57,10 @@ export const textToAudioStream = async ({
 
   const spinner = ora('Downoading audio').start()
   const stream = tts.toStream(cleanText(text))
+  if (!out) {
+    return await streamToPromise(stream)
+  }
+
   const file = createWriteStream(out)
 
   let bytes = 0
@@ -60,7 +72,6 @@ export const textToAudioStream = async ({
 
   stream.on('data', (chunk) => {
     bytes += chunk.length
-    // logUpdate(`Downloaded ${intl.format(bytes)} bytes`)
     spinner.text = `Processed ${intl.format(bytes)} bytes`
   })
 
@@ -70,6 +81,6 @@ export const textToAudioStream = async ({
     stream.destroy()
     spinner.stopAndPersist()
     consola.success('Finished processing!')
-    process.exit(0)
+    return process.exit(0)
   })
 }

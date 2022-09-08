@@ -1,9 +1,7 @@
-import { execaCommand } from 'execa'
-import { readFile, rename, unlink } from 'fs/promises'
 import { Formats, VoiceNames } from './types.js'
 import { extractText } from './extractText.js'
 import { splitText } from './splitText.js'
-import { textToAudio, textToAudioStream } from './textToAudio.js'
+import { textToAudio } from './textToAudio.js'
 import consola from 'consola'
 
 export interface TalkToMe {
@@ -64,53 +62,55 @@ export async function talkToMe({
       ? out
       : createWriteableName(file, format)
 
-  textToAudioStream({
+  return textToAudio({
     text,
     voice,
     format,
-    out: name,
+    ...(typeof file === 'string' ? { out: name } : {}),
   })
+  /**
+   * Deprecated implementation using writing to files directly
+   */
 
-  return
-  const audios = await Promise.all(
-    lines.map(async (line, idx) => {
-      const tempName = `${idx}${name}`
-      return await textToAudio({
-        text: line,
-        voice,
-        format,
-        out: tempName,
-      })
-    })
-  )
+  //   const audios = await Promise.all(
+  //     lines.map(async (line, idx) => {
+  //       const tempName = `${idx}${name}`
+  //       return await textToAudio({
+  //         text: line,
+  //         voice,
+  //         format,
+  //         out: tempName,
+  //       })
+  //     })
+  //   )
 
-  if (audios.length === 1) {
-    await rename(`0${name}`, name)
-    log && console.log("That's all folks!")
-    return
-  }
+  //   if (audios.length === 1) {
+  //     await rename(`0${name}`, name)
+  //     log && console.log("That's all folks!")
+  //     return
+  //   }
 
-  log && console.log('Concatenating audio files...')
-  const final = await execaCommand(
-    `ffmpeg ${audios.map((_, idx) => ` -i ${idx}${name}`).join('')} ${name} -y`
-  )
+  //   log && console.log('Concatenating audio files...')
+  //   const final = await execaCommand(
+  //     `ffmpeg ${audios.map((_, idx) => ` -i ${idx}${name}`).join('')} ${name} -y`
+  //   )
 
-  log && console.log(final.stdout, final.stderr)
+  //   log && console.log(final.stdout, final.stderr)
 
-  log && console.log('Cleaning up...')
-  const unlinked = await Promise.all(
-    audios.map(async (audio, idx) => {
-      if (audio === out) return
-      try {
-        return await unlink(`${idx}${name}`)
-      } catch (e) {
-        console.error(e)
-      }
-    })
-  )
+  //   log && console.log('Cleaning up...')
+  //   const unlinked = await Promise.all(
+  //     audios.map(async (audio, idx) => {
+  //       if (audio === out) return
+  //       try {
+  //         return await unlink(`${idx}${name}`)
+  //       } catch (e) {
+  //         console.error(e)
+  //       }
+  //     })
+  //   )
 
-  if (typeof file === 'object') {
-    return await readFile(name)
-  }
-  log && console.log('Done!')
+  //   if (typeof file === 'object') {
+  //     return await readFile(name)
+  //   }
+  //   log && console.log('Done!')
 }
