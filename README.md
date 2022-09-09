@@ -77,3 +77,9 @@ const mp3 = await readForMe({
   chunkSize: 20000,
 })
 ```
+
+## Development
+
+```sh
+pnpm i
+```

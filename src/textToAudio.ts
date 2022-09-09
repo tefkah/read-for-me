@@ -8,7 +8,12 @@ import streamToPromise from 'stream-to-promise'
 /**
  * Apperently the tts engine is not very good at pronouncing & and will silently fail if you provide it with it
  */
-const cleanText = (text: string) => text.replace(/&/g, 'and')
+const cleanText = (text: string) =>
+  text
+    .replace(/\&/g, 'and')
+    .replace(/\u{000c}|`/gu, '')
+    .replace(/</g, 'less than')
+    .replace(/>/g, 'greater than')
 
 export const textToAudioFile = async ({
   text,
@@ -60,14 +65,15 @@ export async function textToAudio({
   )
   await tts.setMetadata(`${voice}Neural`, formats[format] as OUTPUT_FORMAT)
 
-  let timer = setInterval(() => {
+  let timer = setTimeout(() => {
     console.error(
       'There seems to be something wrong, probably becaus the file is too big\nor because it contains some invalid characters, quitting!'
     )
+    console.error(`The text that caused the error is ${chunkName}: ${text}`)
     return process.exit(1)
   }, 20000)
 
-  const spinner = ora(`Downoading audio`).start()
+  const spinner = ora(`Downloading audio for ${chunkName}`).start()
   const stream = tts.toStream(cleanText(text))
   let bytes = 0
 
@@ -80,15 +86,15 @@ export async function textToAudio({
     // return a promise that resolves with the output of the stream, and rejects if there is an error or the timeout finishes
     const buffers: Buffer[] = []
     stream.on('data', (chunk) => {
-      timer.refresh()
+      clearTimeout(timer)
       bytes += chunk.length
-      spinner.text = `Downloading audio ${intl.format(bytes)} bytes`
+      spinner.text = `Processed ${intl.format(bytes)} bytes for ${chunkName}`
       buffers.push(chunk)
     })
 
     return new Promise((resolve, reject) => {
       stream.on('end', () => {
-        clearInterval(timer)
+        clearTimeout(timer)
         spinner.succeed()
         resolve(Buffer.concat(buffers))
       })
