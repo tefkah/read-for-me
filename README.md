@@ -6,6 +6,8 @@ Usable as a CLI tool and a library.
 
 Works on most files, both local and remote.
 
+Should support a lot of voices, but I've only tested with the default one.
+
 ## Requirements
 
 You need to have `pdftotext` on your path for PDFs, `antiword` for Word. See the `textract` package for specific requirements.
@@ -47,7 +49,31 @@ readforme https://apdfonline.com/somepdf.pdf --voice "en-US-Aria" hiii.mp3
 
 ## API
 
+Read the buffer yourself. If you do this, you need to pass the mime-type as well.
+
 ```ts
 import { readForMe } from 'read-for-me'
 import fs from 'fs/promises'
+
+const file = await fs.readFile('somepdf.pdf')
+const mp3 = await readForMe({
+  file,
+  mimeType: 'application/pdf',
+  format: 'mp3',
+  voice: 'en-US-Aria',
+  chunkSize: 20000,
+})
+```
+
+You can of course also pass it a URL or location
+
+```ts
+import { readForMe } from 'read-for-me'
+
+const mp3 = await readForMe({
+  file: 'https://apdfonline.com/somepdf.pdf',
+  format: 'mp3',
+  voice: 'en-US-Aria',
+  chunkSize: 20000,
+})
 ```
