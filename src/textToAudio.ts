@@ -52,10 +52,12 @@ export async function textToAudio({
 }: TextToAudioOptions) {
   const tts = new MsEdgeTTS()
 
-  consola.info(`Generating audio file ${out}`)
+  consola.info(
+    `Generating audio file ${out} from a chunk of ${text.length} characters`
+  )
   await tts.setMetadata(`${voice}Neural`, formats[format] as OUTPUT_FORMAT)
 
-  const spinner = ora('Downoading audio').start()
+  const spinner = ora(`Downoading audio`).start()
   const stream = tts.toStream(cleanText(text))
   if (!out) {
     return await streamToPromise(stream)
@@ -69,12 +71,20 @@ export async function textToAudio({
     notation: 'compact',
     useGrouping: true,
   })
+  let timer = setInterval(() => {
+    console.error(
+      'There seems to be something wrong, probably becausle is too big or because it contains some invalid characters, quitting!'
+    )
+    return process.exit(1)
+  }, 10000)
 
   stream.on('data', (chunk) => {
+    timer.refresh()
     bytes += chunk.length
     spinner.text = `Processed ${intl.format(bytes)} bytes`
   })
 
+  stream.on('error', (err) => consola.error(new Error(err.message)))
   file.on('error', (err) => consola.error(new Error(err.message)))
 
   file.on('finish', () => {
