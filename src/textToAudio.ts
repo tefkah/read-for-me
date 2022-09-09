@@ -36,10 +36,11 @@ type TextToAudioOptions = {
   voice?: VoiceNames
   format?: Formats
   out?: string
+  idx?: number
 }
 
 export function textToAudio(
-  opts: TextToAudioOptions & { out: string }
+  opts: TextToAudioOptions & { out: string; idx: number }
 ): Promise<undefined>
 export function textToAudio(
   opts: Omit<TextToAudioOptions, 'out'>
@@ -49,40 +50,64 @@ export async function textToAudio({
   voice = 'en-US-Jenny',
   format = 'mp3',
   out,
+  idx,
 }: TextToAudioOptions) {
   const tts = new MsEdgeTTS()
+  const chunkName = out || `chunk ${(idx ?? 0) + 1}`
 
   consola.info(
-    `Generating audio file ${out} from a chunk of ${text.length} characters`
+    `Generating audio file ${chunkName} from a chunk of ${text.length} characters`
   )
   await tts.setMetadata(`${voice}Neural`, formats[format] as OUTPUT_FORMAT)
 
+  let timer = setInterval(() => {
+    console.error(
+      'There seems to be something wrong, probably becaus the file is too big\nor because it contains some invalid characters, quitting!'
+    )
+    return process.exit(1)
+  }, 20000)
+
   const spinner = ora(`Downoading audio`).start()
   const stream = tts.toStream(cleanText(text))
-  if (!out) {
-    return await streamToPromise(stream)
-  }
-
-  const file = createWriteStream(out)
-
   let bytes = 0
-  stream.pipe(file)
+
   const intl = new Intl.NumberFormat('en-US', {
     notation: 'compact',
     useGrouping: true,
   })
-  let timer = setInterval(() => {
-    console.error(
-      'There seems to be something wrong, probably becausle is too big or because it contains some invalid characters, quitting!'
-    )
-    return process.exit(1)
-  }, 10000)
 
+  if (!out) {
+    // return a promise that resolves with the output of the stream, and rejects if there is an error or the timeout finishes
+    const buffers: Buffer[] = []
+    stream.on('data', (chunk) => {
+      timer.refresh()
+      bytes += chunk.length
+      spinner.text = `Downloading audio ${intl.format(bytes)} bytes`
+      buffers.push(chunk)
+    })
+
+    return new Promise((resolve, reject) => {
+      stream.on('end', () => {
+        clearInterval(timer)
+        spinner.succeed()
+        resolve(Buffer.concat(buffers))
+      })
+      stream.on('error', (err) => {
+        clearInterval(timer)
+        spinner.fail()
+        reject(err)
+      })
+    })
+  }
   stream.on('data', (chunk) => {
     timer.refresh()
     bytes += chunk.length
-    spinner.text = `Processed ${intl.format(bytes)} bytes`
+    spinner.text = `Processed ${intl.format(bytes)} bytes of ${chunkName}`
   })
+
+  const file = createWriteStream(out)
+
+  stream.pipe(file)
 
   stream.on('error', (err) => consola.error(new Error(err.message)))
   file.on('error', (err) => consola.error(new Error(err.message)))

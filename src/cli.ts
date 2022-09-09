@@ -26,7 +26,7 @@ const argv = cli({
     },
     format: {
       type: Format,
-      description: 'Format to use (mp3, webm)',
+      description: 'Format to use (mp3,mp3low, webm)',
       default: 'mp3' as Formats,
     },
     chunkSize: {
@@ -55,7 +55,13 @@ const main = async () => {
   }
 
   console.info(`Extracting text from ${file}`)
-  readForMe({ file, out, voice, format, chunkSize, log: true })
+  try {
+    await readForMe({ file, out, voice, format, chunkSize, log: true })
+    consola.success('Done!')
+    process.exit(0)
+  } catch (error) {
+    consola.error(new Error(error as string))
+  }
 }
 
 main()

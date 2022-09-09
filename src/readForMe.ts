@@ -3,6 +3,7 @@ import { extractText } from './extractText.js'
 import { splitText } from './splitText.js'
 import { textToAudio } from './textToAudio.js'
 import consola from 'consola'
+import { writeFile } from 'fs/promises'
 
 export interface ReadForMe {
   file: string | Buffer
@@ -61,6 +62,20 @@ export async function readForMe({
       : out
       ? out
       : createWriteableName(file, format)
+
+  const buffers = await Promise.all(
+    lines.map(
+      async (line, idx) => await textToAudio({ text: line, format, voice, idx })
+    )
+  )
+
+  const final = Buffer.concat(buffers)
+
+  if (typeof file === 'string') {
+    return await writeFile(name, final)
+  }
+
+  return final
 
   return textToAudio({
     text,
