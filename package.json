@@ -35,7 +35,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
     "cleye": "^1.2.1",
