@@ -1,12 +1,16 @@
 # Talk to me
 
-Create mp3/webms from almost any type of file using MS Edge's TTS api.
+Create mp3/webms from almost any type of file using MS Edge's TTS api!
 
 Usable as a CLI tool and a library.
 
 Works on most files, both local and remote.
 
 Should support a lot of voices, but I've only tested with the default one.
+
+Will probably stop working sooner rather than later! Microsoft will probably nuke this API at some point.
+
+Based on [MsEdgeTTS](https://github.com/Migushthe2nd/MsEdgeTTS)
 
 ## Requirements
 

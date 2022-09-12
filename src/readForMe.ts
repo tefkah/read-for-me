@@ -4,6 +4,7 @@ import { splitText } from './splitText.js'
 import { textToAudio } from './textToAudio.js'
 import consola from 'consola'
 import { writeFile } from 'fs/promises'
+import { URLConfig } from 'textract'
 
 export interface ReadForMe {
   file: string | Buffer
@@ -19,6 +20,8 @@ export interface ReadForMe {
   voice: VoiceNames
   /** Whether to show console.log messages */
   log?: boolean
+  /** Options for textract */
+  textractOptions?: URLConfig
 }
 
 const createWriteableName = (name: string, format: string) =>
@@ -38,15 +41,16 @@ export async function readForMe({
   voice,
   out,
   log = false,
+  textractOptions,
 }: ReadForMe): Promise<void | Buffer> {
   if (typeof file !== 'string' && !mimeType)
     throw new Error('mimeType is required when passing a buffer')
 
   const text =
     typeof file === 'string'
-      ? await extractText(file)
+      ? await extractText(file, textractOptions)
       : // @ts-expect-error this should be inferred correctly
-        await extractText(file, mimeType)
+        await extractText(file, mimeType, textractOptions)
 
   if (!text) {
     throw new Error('Could not extract text from file')

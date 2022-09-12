@@ -39,6 +39,10 @@ const argv = cli({
       type: Boolean,
       description: 'List available voices',
     },
+    typeOverride: {
+      type: String,
+      description: 'Override the file type for URL based extractions',
+    },
   },
 })
 
@@ -47,7 +51,7 @@ const main = async () => {
   consola.wrapConsole()
 
   const { file, out } = argv._
-  const { listVoices, voice, format, chunkSize } = argv.flags
+  const { listVoices, voice, format, chunkSize, typeOverride } = argv.flags
 
   if (listVoices) {
     console.dir(voiceNames, { depth: null })
@@ -56,7 +60,15 @@ const main = async () => {
 
   console.info(`Extracting text from ${file}`)
   try {
-    await readForMe({ file, out, voice, format, chunkSize, log: true })
+    await readForMe({
+      file,
+      out,
+      voice,
+      format,
+      chunkSize,
+      log: true,
+      textractOptions: { typeOverride },
+    })
     consola.success('Done!')
     process.exit(0)
   } catch (error) {
