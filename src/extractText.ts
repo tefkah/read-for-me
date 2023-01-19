@@ -42,7 +42,7 @@ export async function extractText(
       return text as string
     }
 
-    const text = /http:/.test(file)
+    const text = /^https?:/.test(file)
       ? ((await textFromUrl(file, opts)) as string)
       : ((await textFromFile(file, opts)) as string)
 
